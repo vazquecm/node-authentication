@@ -3,20 +3,38 @@
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// use the first part if it exists if not use the second part
+const SESSION_SECRET = process.env.SESSION_SECRET || 'supersecret';
+
 app.set('view engine', 'jade');
 
 app.use(bodyParser.urlencoded({ extended: false}));
+
+// keeps the info stored in a session ID cookie for user tracking
+app.use(session({
+  secret: SESSION_SECRET,
+  // allows you to keep track of session keeping all data
+  store: new RedisStore()
+}));
+app.use((req, res, next) => {
+  req.session.count = req.session.count || 0;
+  req.session.count++;
+  console.log(req.session);
+  next();
+});
 
 // home page
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-// login form is already registered
+// Root Route -- login form, is already registered
 app.get('/login', (req, res) => {
   res.render('login');
 });
