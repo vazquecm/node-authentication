@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+
 mongoose.connect('mongodb://localhost:27017/nodeauth', (err) => {
   if (err) throw err;
 
@@ -47,4 +48,3 @@ mongoose.connect('mongodb://localhost:27017/nodeauth', (err) => {
     console.log(`App listening on port ${PORT}`);
   });
 });
-
