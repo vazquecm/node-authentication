@@ -3,8 +3,11 @@
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const mongoose = require('mongoose');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session);// for memory storage
+
+const userRoutes = require('./lib/user/routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,12 +25,13 @@ app.use(session({
   // allows you to keep track of session keeping all data
   store: new RedisStore()
 }));
-/// this code uses more analytics in getting the user info stored in memory for when they login in again.
+
+app.use(userRoutes);
+
+app.locals.title = '';
+
 app.use((req, res, next) => {
-  req.session.visits = req.session.visits || {};
-  req.session.visits[req.url] = req.session.visits[req.url] || 0;
-  req.session.count[req.url]++
-  console.log(req.session);
+  app.locals.user = req.session.user || { email: 'Guest' };
   next();
 });
 
@@ -36,32 +40,11 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// Root Route -- login form, is already registered
-app.get('/login', (req, res) => {
-  res.render('login');
-});
-app.post('/login', (req, res) => {
-  res.redirect('/');
+mongoose.connect('mongodb://localhost:27017/nodeauth', (err) => {
+  if (err) throw err;
+
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+  });
 });
 
-
-/// registration form
-app.get('/register', (req, res) => {
-  res.render('register');
-});
-/// password verification on registration form
-app.post('/register', (req, res) => {
-  if (req.body.password === req.body.verify) {
-    res.redirect('/login');
-  } else {
-    res.render('register', {
-      email: req.body.email,
-      message: 'Passwords do not match'
-    });
-  }
-});
-
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});

@@ -9,3 +9,4 @@
 3. body-parser
 4. Express-session
 5. Redis
+6. Mongoose
