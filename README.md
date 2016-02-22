@@ -10,3 +10,4 @@
 4. Express-session
 5. Redis
 6. Mongoose
+7. bcrypt
