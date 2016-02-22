@@ -22,9 +22,11 @@ app.use(session({
   // allows you to keep track of session keeping all data
   store: new RedisStore()
 }));
+/// this code uses more analytics in getting the user info stored in memory for when they login in again.
 app.use((req, res, next) => {
-  req.session.count = req.session.count || 0;
-  req.session.count++;
+  req.session.visits = req.session.visits || {};
+  req.session.visits[req.url] = req.session.visits[req.url] || 0;
+  req.session.count[req.url]++
   console.log(req.session);
   next();
 });
