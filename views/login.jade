@@ -1,13 +1,13 @@
-if message
-  p= message
-
+each msgs, type in messages
+  for msg in msgs
+    p(class=type)= msg
 
 form(action='/login', method='POST')
   .input-group
-    label(for='email')  Enter Email
+    label(for='email') Email
     input#email(type='email', name='email', autofocus, required)
   .input-group
-    label(for='pass')  Enter Password
+    label(for='pass') Password
     input#pass(type='password', name='password', required)
   .input-group
     input(type='submit', value='Login')

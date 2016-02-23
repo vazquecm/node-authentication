@@ -12,4 +12,4 @@
 6. Mongoose
 7. bcrypt
 8. method-override
-9. Passport -- middleware for Nodejs to authenticate users
+9. Passport -- middleware for Node.js to authenticate users
